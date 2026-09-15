@@ -982,16 +982,31 @@
                     </div>
                 </div>
 
-                <div class="file-upload-area" id="uploadArea" onclick="openFileUpload();">
-                    <div style="color: var(--secondary); font-weight: 600; margin-bottom: 15px; font-size: 28px;">📸</div>
-                    <div style="color: var(--secondary); font-weight: 600; margin-bottom: 12px; font-size: 16px;">Sube tu comprobante</div>
-                    <div style="color: rgba(255, 255, 255, 0.6); font-size: 13px; line-height: 1.8;">
-                        <strong style="color: var(--secondary);">En celular:</strong> Toma foto con cámara o elige de galería
-                        <br><strong style="color: var(--secondary);">En computadora:</strong> Sube archivo, captura o foto
-                        <br><br><em style="font-size: 11px; color: rgba(255,255,255,0.4);">✓ Cualquier formato: JPG, PNG, WEBP, GIF</em>
-                    </div>
-                    <input type="file" id="proofFile" class="file-upload-input" accept="image/*" capture="environment" onchange="handleFileSelect(event)">
-                    <input type="file" id="proofFileGallery" class="file-upload-input" accept="image/*" onchange="handleFileSelect(event)" style="display:none;">
+                <div style="margin-top: 20px; text-align: center;">
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 15px; font-size: 13px;">Elige cómo enviar tu comprobante:</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;">
+                    <button class="btn btn-primary" style="padding: 14px;" onclick="openCameraUpload()">
+                        📷 Tomar Foto
+                    </button>
+                    <button class="btn btn-primary" style="padding: 14px;" onclick="openGalleryUpload()">
+                        🖼️ Galería
+                    </button>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin: 10px 0;">
+                    <button class="btn btn-primary" style="flex: 1; padding: 14px; background: rgba(37, 211, 102, 0.15); border: 2px solid #25d366; color: #25d366;" onclick="sendViaWhatsApp()">
+                        💬 Enviar por WhatsApp
+                    </button>
+                </div>
+
+                <input type="file" id="proofFileCamera" class="file-upload-input" accept="image/*" capture="environment" onchange="handleFileSelect(event)" style="display:none;">
+                <input type="file" id="proofFileGallery" class="file-upload-input" accept="image/*" onchange="handleFileSelect(event)" style="display:none;">
+
+                <div class="file-preview hidden" id="filePreview">
+                    <span style="font-size: 18px;">✅</span>
+                    <span id="fileName">Archivo seleccionado</span>
                 </div>
 
                 <div class="file-preview hidden" id="filePreview">
@@ -1367,10 +1382,46 @@
             goToStep(4);
         }
 
-        function openFileUpload() {
-            // En celular: Abre cámara o galería automático
-            // En desktop: Abre explorador de archivos
-            document.getElementById('proofFile').click();
+        function openCameraUpload() {
+            document.getElementById('proofFileCamera').click();
+        }
+
+        function openGalleryUpload() {
+            document.getElementById('proofFileGallery').click();
+        }
+
+        function sendViaWhatsApp() {
+            const username = currentUser.username;
+            const amount = currentUser.depositAmount;
+            const operationId = document.getElementById('operationId').value || 'N/A';
+
+            if (!username || !amount) {
+                alert('Por favor completa los datos antes de continuar');
+                return;
+            }
+
+            const reference = 'REF-' + Date.now().toString().slice(-8);
+
+            const message = `
+💸 SOLICITUD DE DEPÓSITO - CELUAPUESTAS
+
+👤 Usuario: ${username}
+💰 Monto: $${amount}
+🔐 Operación: ${operationId}
+📅 Referencia: ${reference}
+⏰ Fecha: ${new Date().toLocaleString('es-AR')}
+
+📸 Comprobante: Enviado por WhatsApp
+🎮 Plataforma: ${CONFIG.PLATFORM_URL}
+
+✓ Usuario enviará comprobante por WhatsApp
+✓ Verificar depósito en cuenta bancaria
+            `;
+
+            const whatsappURL = `https://wa.me/${CONFIG.WHATSAPP_ADMIN.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappURL, '_blank');
+
+            alert('✓ Se abrirá WhatsApp. Envía tu comprobante en el chat! 📸');
         }
 
         function handleFileSelect(event) {
@@ -1383,8 +1434,65 @@
         }
 
         function submitPayment() {
+            // Si no hay archivo pero hay datos, permite enviar igual por WhatsApp
             if (!currentUser.proofFile) {
-                alert('Debes seleccionar un comprobante');
+                const username = currentUser.username;
+                const amount = currentUser.depositAmount;
+                
+                if (!username || !amount) {
+                    alert('Debes completar los datos antes de enviar');
+                    return;
+                }
+                
+                // Enviar sin imagen
+                const operationId = document.getElementById('operationId').value || 'N/A';
+                const reference = 'REF-' + Date.now().toString().slice(-8);
+
+                let message;
+                if (userType === 'new') {
+                    message = `
+🎰 NUEVO REGISTRO - CELUAPUESTAS
+
+👤 Usuario: ${username}
+📧 Email: ${currentUser.email || 'N/A'}
+📱 WhatsApp: ${currentUser.phone || 'N/A'}
+💰 Fichas: $${amount}
+🔐 Operación: ${operationId}
+📅 Referencia: ${reference}
+⏰ Fecha: ${new Date().toLocaleString('es-AR')}
+
+📸 Comprobante: Será enviado por WhatsApp
+🎮 Plataforma: ${CONFIG.PLATFORM_URL}
+
+✓ Verificar comprobante en WhatsApp
+✓ Confirmar acceso al usuario
+                    `;
+                } else {
+                    message = `
+💰 CARGA DE FICHAS - CELUAPUESTAS
+
+👤 Usuario: ${username}
+💰 Fichas: $${amount}
+🔐 Operación: ${operationId}
+📅 Referencia: ${reference}
+⏰ Fecha: ${new Date().toLocaleString('es-AR')}
+
+📸 Comprobante: Será enviado por WhatsApp
+🎮 Plataforma: ${CONFIG.PLATFORM_URL}
+
+✓ Verificar comprobante en WhatsApp
+✓ Confirmar carga de fichas
+                    `;
+                }
+
+                const whatsappURL = `https://wa.me/${CONFIG.WHATSAPP_ADMIN.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
+                window.open(whatsappURL, '_blank');
+
+                // Mostrar éxito
+                document.getElementById('successUsername').textContent = username;
+                document.getElementById('successAmount').textContent = amount.toFixed(2);
+                document.getElementById('successRef').textContent = reference;
+                goToStep(5);
                 return;
             }
 
