@@ -931,18 +931,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: var(--gold); text-align: center; margin-bottom: 15px; font-size: 14px; text-transform: uppercase;">Elige una opción</h3>
                     
-                    <!-- OPCIÓN 1: CVU -->
-                    <div class="cbu-container" style="margin-bottom: 15px;">
-                        <div style="color: var(--gold); font-size: 12px; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px;">🔢 Transferencia por CVU</div>
-                        <div class="cbu-number" id="cvuDisplay">00000697015292532838835</div>
-                        <button class="cbu-copy-btn" onclick="copyCVU()">
-                            📋 Copiar CVU
-                        </button>
-                    </div>
-
-                    <!-- OPCIÓN 2: ALIAS -->
+                    <!-- OPCIÓN: ALIAS -->
                     <div class="cbu-container">
                         <div style="color: var(--gold); font-size: 12px; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px;">💬 Transferencia por Alias</div>
                         <div class="cbu-number" id="aliasDisplay" style="font-size: 28px; letter-spacing: 2px;">dolar69.arq</div>
@@ -1250,7 +1240,7 @@
 
 👤 Usuario: ${username}
 💰 Monto: $${amount}
-🏦 CVU/Alias: ${cvu}
+🏦 Alias: ${cvu}
 📅 Referencia: ${reference}
 ⏰ Fecha: ${new Date().toLocaleString('es-AR')}
 
@@ -1362,13 +1352,6 @@
             currentUser.depositAmount = amount;
             document.getElementById('transferAmount').textContent = amount.toFixed(2);
             goToStep(3);
-        }
-
-        function copyCVU() {
-            const cvu = "00000697015292532838835";
-            navigator.clipboard.writeText(cvu).then(() => {
-                alert('✓ CVU copiado al portapapeles');
-            });
         }
 
         function copyAlias() {
