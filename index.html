@@ -973,7 +973,9 @@
                 </div>
 
                 <div style="margin-top: 20px; text-align: center;">
-                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 15px; font-size: 13px;">Elige cómo enviar tu comprobante:</p>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 15px; font-size: 13px; line-height: 1.6;">
+                        <strong style="color: #25d366;">📸 1. Sube tu comprobante:</strong>
+                    </p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;">
@@ -985,19 +987,8 @@
                     </button>
                 </div>
 
-                <div style="display: flex; gap: 10px; margin: 10px 0;">
-                    <button class="btn btn-primary" style="flex: 1; padding: 14px; background: rgba(37, 211, 102, 0.15); border: 2px solid #25d366; color: #25d366;" onclick="sendViaWhatsApp()">
-                        💬 Enviar por WhatsApp
-                    </button>
-                </div>
-
                 <input type="file" id="proofFileCamera" class="file-upload-input" accept="image/*" capture="environment" onchange="handleFileSelect(event)" style="display:none;">
                 <input type="file" id="proofFileGallery" class="file-upload-input" accept="image/*" onchange="handleFileSelect(event)" style="display:none;">
-
-                <div class="file-preview hidden" id="filePreview">
-                    <span style="font-size: 18px;">✅</span>
-                    <span id="fileName">Archivo seleccionado</span>
-                </div>
 
                 <div class="file-preview hidden" id="filePreview">
                     <span style="font-size: 18px;">✅</span>
@@ -1011,12 +1002,20 @@
                     <input type="text" id="operationId" placeholder="Si tu banco lo muestra, pégalo aquí">
                 </div>
 
-                <button class="btn btn-primary" style="margin-top: 30px; padding: 18px 36px; font-size: 16px; font-weight: 700;" onclick="submitPayment()">
-                    ✓ Enviar Comprobante por WhatsApp
+                <div style="margin-top: 25px; text-align: center;">
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 15px; font-size: 13px; line-height: 1.6;">
+                        <strong style="color: #25d366;">2️⃣ Abre WhatsApp y envía tu comprobante:</strong>
+                    </p>
+                </div>
+
+                <button class="btn btn-primary" style="margin-top: 15px; padding: 18px 36px; font-size: 16px; font-weight: 700; background: rgba(37, 211, 102, 0.2); border: 2px solid #25d366; color: #25d366;" onclick="submitPayment()">
+                    💬 Abrir WhatsApp → Enviar Comprobante
                 </button>
 
-                <p style="color: rgba(255,255,255,0.5); font-size: 12px; text-align: center; margin-top: 15px;">
-                    Se enviará por WhatsApp
+                <p style="color: rgba(255,255,255,0.5); font-size: 11px; text-align: center; margin-top: 15px; line-height: 1.6;">
+                    ✓ Se abrirá WhatsApp con el mensaje<br>
+                    ✓ Tu envías la imagen en el chat<br>
+                    ✓ Confirmaremos tu acceso
                 </p>
             </div>
 
@@ -1444,11 +1443,11 @@
 📅 Referencia: ${reference}
 ⏰ Fecha: ${new Date().toLocaleString('es-AR')}
 
-📸 Comprobante: Será enviado por WhatsApp
+📸 *POR FAVOR ENVÍA TU COMPROBANTE EN ESTE CHAT*
 🎮 Plataforma: ${CONFIG.PLATFORM_URL}
 
-✓ Verificar comprobante en WhatsApp
-✓ Confirmar acceso al usuario
+✓ Espera confirmación de acceso
+✓ Te enviaremos tu usuario activado
                     `;
                 } else {
                     message = `
@@ -1460,11 +1459,11 @@
 📅 Referencia: ${reference}
 ⏰ Fecha: ${new Date().toLocaleString('es-AR')}
 
-📸 Comprobante: Será enviado por WhatsApp
+📸 *POR FAVOR ENVÍA TU COMPROBANTE EN ESTE CHAT*
 🎮 Plataforma: ${CONFIG.PLATFORM_URL}
 
-✓ Verificar comprobante en WhatsApp
-✓ Confirmar carga de fichas
+✓ Espera confirmación de carga
+✓ Te acreditaremos las fichas
                     `;
                 }
 
@@ -1524,10 +1523,11 @@
 📅 Referencia: ${reference}
 ⏰ Fecha: ${new Date().toLocaleString('es-AR')}
 
+📸 *ENVIASTE TU COMPROBANTE EN ESTE CHAT*
 🎮 Plataforma: ${CONFIG.PLATFORM_URL}
 
-✓ Verificar comprobante en base de datos
-✓ Confirmar acceso al usuario
+✓ Verificando transferencia
+✓ Te confirmamos acceso en breve
                 `;
             } else {
                 // Mensaje para usuario EXISTENTE (solo carga)
@@ -1540,10 +1540,11 @@
 📅 Referencia: ${reference}
 ⏰ Fecha: ${new Date().toLocaleString('es-AR')}
 
+📸 *ENVIASTE TU COMPROBANTE EN ESTE CHAT*
 🎮 Plataforma: ${CONFIG.PLATFORM_URL}
 
-✓ Verificar comprobante en base de datos
-✓ Confirmar carga de fichas
+✓ Verificando transferencia
+✓ Te acreditamos fichas al confirmar
                 `;
             }
 
